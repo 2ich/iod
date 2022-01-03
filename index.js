@@ -13,17 +13,21 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
 
+// 60 frames per second in ms ? : 1000 / 60 == 16.66..
+// 1000 / 100 == 10
+const framerate = 17
 
+function game() {
+    io.emit('game', 'hello')
+}
 
+io.on('connection', (socket) => {
+    console.log('Made socket connection with ID: ' + socket.id)
+    io.emit('game', 'hello')
 
+    setInterval(game, framerate)
 
-
-
-
-
-
-
-
+})
 
 server.listen(port, () => {
     console.log(`Socket.IO server running at http://localhost:${port}/`);

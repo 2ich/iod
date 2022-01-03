@@ -3,13 +3,28 @@
 </head>
 
 <body>
-    <h1>helllwo</h1>
-    <canvas></canvas>
+
+<h1 id="hone">helllwo</h1>
+
+<canvas></canvas>
 
 
-    <script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+counter = 0
+
+const socket = io()
+
+socket.on('game', (msg) => {
+    console.log('Client got the message: ' + msg)
+    counter++
+    document.getElementById('hone').innerHTML = counter
+})
+
+        
 
 
+</script>
 
-    </script>
 </body>
