@@ -15,17 +15,30 @@ app.get('/', (req, res) => {
 
 // 60 frames per second in ms ? : 1000 / 60 == 16.66..
 // 1000 / 100 == 10
-const framerate = 17
+const updaterate = 50
+
+players = {}
+
+
+function rint(min = 0, max) {
+    return min + Math.floor(Math.random() * (max + 1 - min));
+}
 
 function game() {
-    io.emit('game', 'hello')
+    //io.emit('game', 'hello')
+    io.to('general').emit('game', players, 'general game emit')
 }
 
 io.on('connection', (socket) => {
     console.log('Made socket connection with ID: ' + socket.id)
-    io.emit('game', 'hello')
+    socket.join('general')
+    players[[socket.id]] = { 'pos' : { 'x' : rint(0, 500), 'y' : rint(0, 500) }}
+    console.log(players)
+    socket.emit('con', players)
+    // io.emit('game', 'hello')
+    // io.to('general').emit('game', 'general emit')
 
-    setInterval(game, framerate)
+    setInterval(game, updaterate)
 
 })
 

@@ -1,25 +1,226 @@
 <head>
     <title>Topup</title>
+
+    <style>
+
+    </style>
 </head>
 
 <body>
 
 <h1 id="hone">helllwo</h1>
 
-<canvas></canvas>
+<canvas id="canvas"></canvas>
 
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
+function removeOnce(arr, value) {
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+
+function removeAll(arr, value) {
+  var i = 0;
+  while (i < arr.length) {
+    if (arr[i] === value) {
+      arr.splice(i, 1);
+    } else {
+      ++i;
+    }
+  }
+  return arr;
+}
+
 counter = 0
+let canvas = document.getElementById('canvas')
+let ctx = canvas.getContext('2d');
+
+canvas.height = 600
+canvas.width = 600
+
+ctx.fillStyle = 'black'
+ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+players = {}
+psize = 30
+vel = 5 
+x = null
+y = null
+framerate = 17
+
+keydow = []
+dir = '' // 
+
+lcodes = [37]
+ucodes = [38] 
+rcodes = [39] 
+dcodes = [40] 
+
+//codr = 
+
+window.addEventListener('keydown', e => {
+
+    e.preventDefault()
+    keyc = e.keyCode
+    if (keydow.indexOf(keyc) < 0) {
+        keydow.push(keyc)
+        removeAll(keydow, (keyc + 2) % 4 + +!!((keyc + 2) % 4) * 36 + +!!!((keyc + 2) % 4) * 40)
+    }
+    console.log(keydow)
+
+    /*
+    switch (e.keyCode) {
+        case 37: { // left
+            x -= vel
+            console.log(vel)
+            console.log('left ' + x + ' ' + y)
+            break
+        }
+        case 38: { // up
+            y -= vel
+            console.log(vel)
+            console.log('up ' + x + ' ' + y)
+            break
+        }
+        case 39: { // right
+            x += vel
+            console.log(vel)
+            console.log('right ' + x + ' ' + y)
+            break
+        }
+        case 40: { // down
+            y += vel
+            console.log(vel)
+            console.log('down ' + x + ' ' + y)
+            break
+        }
+    }
+    */
+})
+
+window.addEventListener('keyup', e => {
+
+    e.preventDefault()
+
+    removeAll(keydow, e.keyCode)
+
+})
+
+
+
+
+
+
+function draw() {
+
+    // l r u d ul ur dl dr
+    dir = ''
+    if (keydow.length < 2) {
+        switch(keydow[0]) {
+            case 37: { // left
+                dir = 'l'
+                x -= vel
+                console.log(vel)
+                console.log('left ' + x + ' ' + y)
+                break
+            }
+            case 38: { // up
+                dir = 'u'
+                y -= vel
+                console.log(vel)
+                console.log('up ' + x + ' ' + y)
+                break
+            }
+            case 39: { // right
+                dir = 'r'
+                x += vel
+                console.log(vel)
+                console.log('right ' + x + ' ' + y)
+                break
+            }
+            case 40: { // down
+                dir = 'd'
+                y += vel
+                console.log(vel)
+                console.log('down ' + x + ' ' + y)
+                break
+            }
+            default: {
+                dir = ''
+            }
+        }
+    }
+    else {
+        if (keydow.indexOf(37) > -1) {
+            if (keydow.indexOf(38) > -1) {
+                dir = 'ul'
+                x -= vel
+                y -= vel
+            }
+            else {
+                dir = 'dl'
+                x -= vel
+                y += vel
+            }
+        }
+        else if (keydow.indexOf(39) > -1) {
+            if (keydow.indexOf(38) > -1) {
+                dir = 'ur'
+                x += vel
+                y -= vel
+            }
+            else {
+                dir = 'dr'
+                x += vel
+                y += vel
+            }
+        }
+    }
+
+
+
+
+
+
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.fillStyle = 'white'
+    ctx.fillRect(x, y, psize, psize)
+}
+
+setInterval(draw, framerate)
 
 const socket = io()
 
-socket.on('game', (msg) => {
-    console.log('Client got the message: ' + msg)
+socket.on('con', (playerdata) => {
+    console.log("Client socket.id ", socket.id)
+    console.log("Playerdata ", playerdata)
+    //console.log("Pos ", playerdata[])
+    x = playerdata[[socket.id]]['pos']['x']
+    y = playerdata[[socket.id]]['pos']['y']
+})
+
+socket.on('game', (svplayers, msg) => {
+    //console.log('Client got the message: ' + msg)
     counter++
     document.getElementById('hone').innerHTML = counter
+
+    players = svplayers
+    //console.log("Client players: " + players[[socket.id]]['pos'])
+
+
+    //console.log(x, y)
+
+    /*
+    ctx.fillStyle = 'white'
+    ctx.fillRect(x, y, psize, psize)
+    */
 })
 
         
