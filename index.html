@@ -2,38 +2,54 @@
     <title>tpup</title>
 
     <style>
-
+        body {
+            margin: 0;
+            margin: 10;
+        }
+        #canvas {
+            border: 0px solid black;
+        }
     </style>
 </head>
 
 <body>
 
+
+<canvas id="canvas">
+    Your browser does not support HTML 5
+</canvas>
+
 <h1 id="hone">helllwo</h1>
-
-<canvas id="canvas"></canvas>
-
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
 function removeOnce(arr, value) {
-  var index = arr.indexOf(value);
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-  return arr;
+    var index = arr.indexOf(value);
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+    return arr;
 }
 
 function removeAll(arr, value) {
-  var i = 0;
-  while (i < arr.length) {
-    if (arr[i] === value) {
-      arr.splice(i, 1);
-    } else {
-      ++i;
+    var i = 0;
+    while (i < arr.length) {
+        if (arr[i] === value) {
+            arr.splice(i, 1);
+        } else {
+            ++i;
+        }
     }
-  }
-  return arr;
+    return arr;
+}
+
+function getMousePos(canvas, e) {
+    var rect = canvas.getBoundingClientRect()
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    }
 }
 
 counter = 0
@@ -59,10 +75,14 @@ framerate = 17
 keydow = []
 dir = '' // 
 
-lcodes = [37]
-ucodes = [38] 
-rcodes = [39] 
-dcodes = [40] 
+lcodes = 65
+ucodes = 87
+rcodes = 68
+dcodes = 83
+
+xmouse = 0
+ymouse = 0
+mdown = false
 
 //codr = 
 
@@ -71,51 +91,41 @@ window.addEventListener('keydown', e => {
     e.preventDefault()
     keyc = e.keyCode
     if (keydow.indexOf(keyc) < 0) {
+
         keydow.push(keyc)
         //removeAll(keydow, (keyc + 2) % 4 + +!!((keyc + 2) % 4) * 36 + +!!!((keyc + 2) % 4) * 40)
 
     }
     console.log(keydow)
-
-    /*
-    switch (e.keyCode) {
-        case 37: { // left
-            x -= vel
-            console.log(vel)
-            console.log('left ' + x + ' ' + y)
-            break
-        }
-        case 38: { // up
-            y -= vel
-            console.log(vel)
-            console.log('up ' + x + ' ' + y)
-            break
-        }
-        case 39: { // right
-            x += vel
-            console.log(vel)
-            console.log('right ' + x + ' ' + y)
-            break
-        }
-        case 40: { // down
-            y += vel
-            console.log(vel)
-            console.log('down ' + x + ' ' + y)
-            break
-        }
-    }
-    */
 })
 
 window.addEventListener('keyup', e => {
 
     e.preventDefault()
 
-    removeAll(keydow, e.keyCode)
+    removeOnce(keydow, e.keyCode)
 
 })
 
 
+window.addEventListener('mousemove', mouseMove)
+
+function mouseMove(e) {
+    rect = canvas.getBoundingClientRect()
+    xmouse = e.clientX - rect.left
+    ymouse = e.clientY - rect.top
+}
+
+window.addEventListener('mousedown', e => {
+    console.log("MOUSE DOWNED")
+    mdown = true
+    console.log(mdown)
+})
+
+window.addEventListener('mouseup', e => {
+    mdown = false
+    console.log(mdown)
+})
 
 
 
@@ -123,12 +133,12 @@ window.addEventListener('keyup', e => {
 function draw() {
 
     // l r u d ul ur dl dr
-    dir = ''
+
     hor = ''
     ver = ''
 
-    if (keydow.indexOf(37) > -1 != keydow.indexOf(39) > -1) {
-        if (keydow.indexOf(37) > -1) {
+    if (keydow.indexOf(lcodes) > -1 != keydow.indexOf(rcodes) > -1) {
+        if (keydow.indexOf(lcodes) > -1) {
             hor = 'l'
         }
         else {
@@ -136,8 +146,8 @@ function draw() {
         }
     }
     
-    if (keydow.indexOf(38) > -1 != keydow.indexOf(40) > -1) {
-        if (keydow.indexOf(38) > -1) {
+    if (keydow.indexOf(ucodes) > -1 != keydow.indexOf(dcodes) > -1) {
+        if (keydow.indexOf(ucodes) > -1) {
             ver = 'u'
         }
         else {
@@ -146,7 +156,10 @@ function draw() {
     }
 
     dir = hor + ver
+    /*
     console.log("DIRECTION -", dir)
+    console.log(keydow)
+    */
 
     switch(dir) {
         case 'l': {
@@ -186,78 +199,38 @@ function draw() {
             break
         }
     }
-    /*  
-    if (keydow.length < 2) {
-        switch(keydow[0]) {
-    }
-    */
-
-
-
  
-
-/*
-        // if left XOR right
-        //if (keydow.indexOf(37) > -1 != keydow.indexOf(39) > -1) {
-        if (keydow.indexOf(37) > -1) {
-            if (keydow.indexOf(39) > -1) {
-                dir = ''
-            }
-            if (keydow.indexOf(38) > -1) {
-                if (keydow.indexOf(40) > -1) {
-                    dir = ''
-                }
-                else {
-                    dir = 'ul'
-                    x -= veldg
-                    y -= veldg
-                }
-            }
-            else if (keydow.indexOf(40) > -1) {
-                if (keydow.indexOf(38) > -1) {
-                    dir = ''
-                }
-                else {
-                    dir = 'dl'
-                    x -= veldg
-                    y += veldg
-                }
-            }
-            else {
-                dir = ''
-            }
-        }
-        
-        else if (keydow.indexOf(39) > -1) {
-            if (keydow.indexOf(38) > -1) {
-                dir = 'ur'
-                x += veldg
-                y -= veldg
-            }
-            else if (keydow.indexOf(40) > -1) {
-                dir = 'dr'
-                x += veldg
-                y += veldg
-            }
-            else {
-                dir = ''
-            }
-        }
-    }
-*/
+    console.log(xmouse, ymouse)
+    //console.log(getMousePos()
 
 
 
-
-
-
-
-    ctx.fillStyle = 'black'
+    ctx.fillStyle = '#f1f1f1'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = 'white'
+    ctx.fillStyle = 'black'
     ctx.fillRect(x, y, psize, psize)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 setInterval(draw, framerate)
 

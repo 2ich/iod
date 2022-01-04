@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 
 // 60 frames per second in ms ? : 1000 / 60 == 16.66..
 // 1000 / 100 == 10
-const updaterate = 50
+const updaterate = 250
 
 players = {}
 
