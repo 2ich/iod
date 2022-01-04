@@ -1,5 +1,5 @@
 <head>
-    <title>Topup</title>
+    <title>tpup</title>
 
     <style>
 
@@ -47,8 +47,11 @@ ctx.fillStyle = 'black'
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 players = {}
-psize = 30
-vel = 5 
+psize = 15
+vel = 6
+//veldg = vel / 1.41421356237
+veldg = vel * (1 / Math.sqrt(2))
+//veldg += 0.000000000001
 x = null
 y = null
 framerate = 17
@@ -69,7 +72,8 @@ window.addEventListener('keydown', e => {
     keyc = e.keyCode
     if (keydow.indexOf(keyc) < 0) {
         keydow.push(keyc)
-        removeAll(keydow, (keyc + 2) % 4 + +!!((keyc + 2) % 4) * 36 + +!!!((keyc + 2) % 4) * 40)
+        //removeAll(keydow, (keyc + 2) % 4 + +!!((keyc + 2) % 4) * 36 + +!!!((keyc + 2) % 4) * 40)
+
     }
     console.log(keydow)
 
@@ -120,67 +124,128 @@ function draw() {
 
     // l r u d ul ur dl dr
     dir = ''
+    hor = ''
+    ver = ''
+
+    if (keydow.indexOf(37) > -1 != keydow.indexOf(39) > -1) {
+        if (keydow.indexOf(37) > -1) {
+            hor = 'l'
+        }
+        else {
+            hor = 'r'
+        }
+    }
+    
+    if (keydow.indexOf(38) > -1 != keydow.indexOf(40) > -1) {
+        if (keydow.indexOf(38) > -1) {
+            ver = 'u'
+        }
+        else {
+            ver = 'd'
+        }
+    }
+
+    dir = hor + ver
+    console.log("DIRECTION -", dir)
+
+    switch(dir) {
+        case 'l': {
+            x -= vel
+            break
+        }
+        case 'r': {
+            x += vel
+            break
+        }
+        case 'u': {
+            y -= vel
+            break
+        }
+        case 'd': {
+            y += vel
+            break
+        }
+        case 'lu': {
+            x -= veldg
+            y -= veldg
+            break
+        }
+        case 'ru': {
+            x += veldg
+            y -= veldg
+            break
+        }
+        case 'ld': {
+            x -= veldg
+            y += veldg
+            break
+        }
+        case 'rd': {
+            x += veldg
+            y += veldg
+            break
+        }
+    }
+    /*  
     if (keydow.length < 2) {
         switch(keydow[0]) {
-            case 37: { // left
-                dir = 'l'
-                x -= vel
-                console.log(vel)
-                console.log('left ' + x + ' ' + y)
-                break
+    }
+    */
+
+
+
+ 
+
+/*
+        // if left XOR right
+        //if (keydow.indexOf(37) > -1 != keydow.indexOf(39) > -1) {
+        if (keydow.indexOf(37) > -1) {
+            if (keydow.indexOf(39) > -1) {
+                dir = ''
             }
-            case 38: { // up
-                dir = 'u'
-                y -= vel
-                console.log(vel)
-                console.log('up ' + x + ' ' + y)
-                break
+            if (keydow.indexOf(38) > -1) {
+                if (keydow.indexOf(40) > -1) {
+                    dir = ''
+                }
+                else {
+                    dir = 'ul'
+                    x -= veldg
+                    y -= veldg
+                }
             }
-            case 39: { // right
-                dir = 'r'
-                x += vel
-                console.log(vel)
-                console.log('right ' + x + ' ' + y)
-                break
+            else if (keydow.indexOf(40) > -1) {
+                if (keydow.indexOf(38) > -1) {
+                    dir = ''
+                }
+                else {
+                    dir = 'dl'
+                    x -= veldg
+                    y += veldg
+                }
             }
-            case 40: { // down
-                dir = 'd'
-                y += vel
-                console.log(vel)
-                console.log('down ' + x + ' ' + y)
-                break
+            else {
+                dir = ''
             }
-            default: {
+        }
+        
+        else if (keydow.indexOf(39) > -1) {
+            if (keydow.indexOf(38) > -1) {
+                dir = 'ur'
+                x += veldg
+                y -= veldg
+            }
+            else if (keydow.indexOf(40) > -1) {
+                dir = 'dr'
+                x += veldg
+                y += veldg
+            }
+            else {
                 dir = ''
             }
         }
     }
-    else {
-        if (keydow.indexOf(37) > -1) {
-            if (keydow.indexOf(38) > -1) {
-                dir = 'ul'
-                x -= vel
-                y -= vel
-            }
-            else {
-                dir = 'dl'
-                x -= vel
-                y += vel
-            }
-        }
-        else if (keydow.indexOf(39) > -1) {
-            if (keydow.indexOf(38) > -1) {
-                dir = 'ur'
-                x += vel
-                y -= vel
-            }
-            else {
-                dir = 'dr'
-                x += vel
-                y += vel
-            }
-        }
-    }
+*/
+
 
 
 
