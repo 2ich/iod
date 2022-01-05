@@ -56,15 +56,15 @@ counter = 0
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d');
 
-canvas.height = 600
-canvas.width = 600
+canvas.height = 400
+canvas.width = 400
 
 ctx.fillStyle = 'black'
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 players = {}
 psize = 15
-vel = 6
+vel = 5
 //veldg = vel / 1.41421356237
 veldg = vel * (1 / Math.sqrt(2))
 //veldg += 0.000000000001
@@ -134,28 +134,42 @@ function draw() {
 
     // l r u d ul ur dl dr
 
-    hor = ''
-    ver = ''
+    //hor = ''
+    //ver = ''
 
-    if (keydow.indexOf(lcodes) > -1 != keydow.indexOf(rcodes) > -1) {
-        if (keydow.indexOf(lcodes) > -1) {
-            hor = 'l'
-        }
-        else {
-            hor = 'r'
-        }
+    // faster ? or just fancy
+    /*
+    dir = ''
+
+    isl = !!(keydow.indexOf(lcodes) + 1) // 0   0   1   1
+    isr = !!(keydow.indexOf(rcodes) + 1) // 0   1   0   1
+    isu = !!(keydow.indexOf(ucodes) + 1) // 0   0   1   1
+    isd = !!(keydow.indexOf(dcodes) + 1) // 0   1   0   1
+
+    dir = 'l'.repeat(isl && !isr) + 'r'.repeat(isr && !isl) + 'u'.repeat(isu && !isd) + 'd'.repeat(isd && !isu)
+    */
+
+    dir = ''
+
+    isl = keydow.indexOf(lcodes)
+    isu = keydow.indexOf(ucodes)
+    
+    if (isl > -1 != keydow.indexOf(rcodes) > -1) {
+        if (isl > -1)
+            dir = 'l'
+        else
+            dir = 'r'
     }
     
-    if (keydow.indexOf(ucodes) > -1 != keydow.indexOf(dcodes) > -1) {
-        if (keydow.indexOf(ucodes) > -1) {
-            ver = 'u'
-        }
-        else {
-            ver = 'd'
-        }
+    if (isu > -1 != keydow.indexOf(dcodes) > -1) {
+        if (isu > -1)
+            dir += 'u'
+        else
+            dir += 'd'
     }
+    
 
-    dir = hor + ver
+    //dir = hor + ver
     /*
     console.log("DIRECTION -", dir)
     console.log(keydow)
@@ -199,6 +213,7 @@ function draw() {
             break
         }
     }
+
  
     console.log(xmouse, ymouse)
     //console.log(getMousePos()
@@ -210,26 +225,21 @@ function draw() {
 
     ctx.fillStyle = 'black'
     ctx.fillRect(x, y, psize, psize)
+
+    for (const property in players) {
+        ctx.fillStyle = 'pink'
+        console.log("HELLO", socket.id, property)
+        if (property == socket.id) {
+            ctx.fillStyle = 'lightblue'
+        }
+        ctx.fillRect(Math.round(players[property]['pos']['x']), Math.round(players[property]['pos']['y']), psize, psize)
+        console.log(property)
+        
+    };
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// vi .
 
 
 setInterval(draw, framerate)
@@ -244,12 +254,18 @@ socket.on('con', (playerdata) => {
     y = playerdata[[socket.id]]['pos']['y']
 })
 
-socket.on('game', (svplayers, msg) => {
+socket.on('game', (svplayers) => {
     //console.log('Client got the message: ' + msg)
     counter++
     document.getElementById('hone').innerHTML = counter
-
+    //
     players = svplayers
+
+    socket.emit('gack', {'x': x, 'y': y})
+    
+
+
+
     //console.log("Client players: " + players[[socket.id]]['pos'])
 
 
