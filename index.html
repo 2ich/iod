@@ -96,7 +96,7 @@ window.addEventListener('keydown', e => {
         //removeAll(keydow, (keyc + 2) % 4 + +!!((keyc + 2) % 4) * 36 + +!!!((keyc + 2) % 4) * 40)
 
     }
-    console.log(keydow)
+    //console.log(keydow)
 })
 
 window.addEventListener('keyup', e => {
@@ -215,7 +215,7 @@ function draw() {
     }
 
  
-    console.log(xmouse, ymouse)
+    //console.log(xmouse, ymouse)
     //console.log(getMousePos()
 
 
@@ -228,12 +228,12 @@ function draw() {
 
     for (const property in players) {
         ctx.fillStyle = 'pink'
-        console.log("HELLO", socket.id, property)
+        //console.log("HELLO", socket.id, property)
         if (property == socket.id) {
             ctx.fillStyle = 'lightblue'
         }
         ctx.fillRect(Math.round(players[property]['pos']['x']), Math.round(players[property]['pos']['y']), psize, psize)
-        console.log(property)
+        //console.log(property)
         
     };
 }
@@ -247,8 +247,8 @@ setInterval(draw, framerate)
 const socket = io()
 
 socket.on('con', (playerdata) => {
-    console.log("Client socket.id ", socket.id)
-    console.log("Playerdata ", playerdata)
+    //console.log("Client socket.id ", socket.id)
+    //console.log("Playerdata ", playerdata)
     //console.log("Pos ", playerdata[])
     x = playerdata[[socket.id]]['pos']['x']
     y = playerdata[[socket.id]]['pos']['y']
