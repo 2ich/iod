@@ -16,7 +16,7 @@
 
 
 <canvas id="canvas">
-    Your browser does not support HTML 5
+    Your browser does not support HTML5
 </canvas>
 
 <h1 id="hone">helllwo</h1>
@@ -65,7 +65,8 @@ ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 players = {}
 psize = 20 // 15
-vel = 5
+// framerate = 17, size = 20, vel =  8,9 > ? k
+vel = 6
 //veldg = vel / 1.41421356237
 veldg = vel * (1 / Math.sqrt(2))
 //veldg += 0.000000000001
@@ -73,7 +74,7 @@ veldg = vel * (1 / Math.sqrt(2))
 //y = null
 x = 0
 y = 0
-framerate = 17
+framerate = 10 // 16, 17
 
 keydow = []
 dir = '' // 
@@ -87,6 +88,9 @@ xmouse = 0
 ymouse = 0
 mdown = false
 
+positions = []
+
+crame = 0
 //codr = 
 
 window.addEventListener('keydown', e => {
@@ -229,13 +233,51 @@ function draw() {
     ctx.fillStyle = 'black'
     ctx.fillRect(x, y, psize, psize)
 
+    positions.push( {'x': x, 'y': y} )
+    //console.log(positions)
+
     for (const property in players) {
+        console.log('Players for loop iteration', players)
         ctx.fillStyle = 'pink'
         //console.log("HELLO", socket.id, property)
         if (property == socket.id) {
+            // server image
             ctx.fillStyle = 'lightblue'
         }
-        ctx.fillRect(Math.round(players[property]['pos']['x']), Math.round(players[property]['pos']['y']), psize, psize)
+        //ctx.fillRect(Math.round(players[property]['pos']['x']), Math.round(players[property]['pos']['y']), psize, psize)
+        //ctx.fillRect(players[property]['pos']['x'], players[property]['pos']['y'], psize, psize)
+
+
+        //console.log("CRAME", players['poss'][crame]['x'])
+        //console.log("PLAYERS HERE", players)
+        //console.log("PLAYERS 2", players[property]['poss'])
+        //console.log("PLAYERS 3", players[property]['poss'][crame])
+        //console.log("PLAYERS 4", players[property]['poss'][[crame]])
+        // wrong [[]] console.log("[CRAME]", players[property]['poss'][[crame]]['x'])
+
+        krames = players[property]['poss'].length
+
+        try {
+            //console.log("CRAME 2", players[property]['poss'][crame]['x'])
+            //console.log("[CRAME] 2", players[property]['poss'][[crame]]['x'])
+
+            if (crame < krames) {
+                ctx.fillRect(players[property]['poss'][crame]['x'], players[property]['poss'][crame]['y'], psize, psize)
+                crame += 1
+            }
+            else {
+                
+                console.log('krames', krames)
+                console.log('crame', crame)
+                console.log('whole poss', players[property]['poss'])
+                console.log('what', players[property]['poss'][krames - 1])
+                
+                ctx.fillRect(players[property]['poss'][krames - 1]['x'], players[property]['poss'][krames - 1]['y'], psize, psize)
+            }
+        } catch (error) {
+            console.log("Probably out of range eeor")
+            console.error(error)
+        }
         //console.log(property)
         
     };
@@ -253,8 +295,12 @@ socket.on('con', (playerdata) => {
     //console.log("Client socket.id ", socket.id)
     //console.log("Playerdata ", playerdata)
     //console.log("Pos ", playerdata[])
+    /*
     x = playerdata[[socket.id]]['pos']['x']
     y = playerdata[[socket.id]]['pos']['y']
+    */
+    x = playerdata[[socket.id]]['poss'][0]['x']
+    y = playerdata[[socket.id]]['poss'][0]['y']
 })
 
 socket.on('game', (svplayers) => {
@@ -262,9 +308,18 @@ socket.on('game', (svplayers) => {
     counter++
     document.getElementById('hone').innerHTML = counter
     //
-    players = svplayers
+    socket.emit('gack', positions)
+    console.log('Emit gack positions', positions)
 
-    socket.emit('gack', {'x': x, 'y': y})
+    positions = []
+
+
+    players = svplayers
+    crame = 0
+    krames = 0
+
+    // to emit inbetweens
+    //socket.emit('gack', {'x': x, 'y': y})
     
 
 
