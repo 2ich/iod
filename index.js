@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
     socket.join('general')
     // players[[socket.id]] = { 'pos' : { 'x' : rint(0, 200), 'y' : rint(0, 200) }}
     players[[socket.id]] = { 'poss' : [{ 'x' : rint(0, 200), 'y' : rint(0, 200) }] }
+    //players[[socket.id]] = { 'lossposs' : players[[socket.id]]['poss'] }
     console.log(players)
     socket.emit('con', players)
     // io.emit('game', 'hello')
@@ -53,7 +54,16 @@ io.on('connection', (socket) => {
         //console.log(pos)
         //players[[socket.id]]['pos']['x'] = pos['x']
         //players[[socket.id]]['pos']['y'] = pos['y']
-        players[[socket.id]]['poss'] = positions
+        if (positions.length > 0) {
+            //console.log('Posss if', positions)
+            players[[socket.id]]['poss'] = positions
+        }
+        
+        else {
+            console.log('Posss else', positions)
+        }
+        
+        
         // console.log(positions)
         //console.log(players)
     })
