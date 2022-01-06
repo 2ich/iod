@@ -49,10 +49,10 @@ io.on('connection', (socket) => {
     // io.to('general').emit('game', 'general emit')
 
     socket.on('gack', (pos) => {
-        console.log(pos)
+        //console.log(pos)
         players[[socket.id]]['pos']['x'] = pos['x']
         players[[socket.id]]['pos']['y'] = pos['y']
-        console.log(players)
+        //console.log(players)
     })
 
     socket.on('disconnecting', () => {
@@ -69,3 +69,4 @@ server.listen(port, () => {
 })
 
 setInterval(game, updaterate)
+console.log("SETINTERVAL", updaterate)

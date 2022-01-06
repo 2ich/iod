@@ -1,30 +1,5 @@
-<head>
-    <title>tpup</title>
+// should not be seen bro
 
-    <style>
-        body {
-            margin: 0;
-            margin: 10;
-        }
-        #canvas {
-            border: 0px solid black;
-        }
-    </style>
-</head>
-
-<body>
-
-
-<canvas id="canvas">
-    Your browser does not support HTML 5
-</canvas>
-
-<h1 id="hone">helllwo</h1>
-
-<script src="/socket.io/socket.io.js"></script>
-<script>
-
-// inner
 function removeOnce(arr, value) {
     var index = arr.indexOf(value);
     if (index > -1) {
@@ -64,7 +39,7 @@ ctx.fillStyle = 'black'
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 players = {}
-psize = 20 // 15
+psize = 15
 vel = 5
 //veldg = vel / 1.41421356237
 veldg = vel * (1 / Math.sqrt(2))
@@ -72,7 +47,7 @@ veldg = vel * (1 / Math.sqrt(2))
 //x = null
 //y = null
 x = 0
-y = 0
+y = y
 framerate = 17
 
 keydow = []
@@ -282,7 +257,3 @@ socket.on('game', (svplayers) => {
 
         
 
-
-</script>
-
-</body>
