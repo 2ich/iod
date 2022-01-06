@@ -65,8 +65,9 @@ ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 players = {}
 psize = 20 // 15
-// framerate = 17, size = 20, vel =  8,9 > ? k
-vel = 6
+// ~ framerate = 17, size = 20, vel =  8,9 > ? k
+// ~ framerate = 10, size = 20, vel = 6
+vel = 3
 //veldg = vel / 1.41421356237
 veldg = vel * (1 / Math.sqrt(2))
 //veldg += 0.000000000001
@@ -74,7 +75,7 @@ veldg = vel * (1 / Math.sqrt(2))
 //y = null
 x = 0
 y = 0
-framerate = 10 // 16, 17
+framerate = Math.round(1000 / 250) // 16, 17
 
 keydow = []
 dir = '' // 
