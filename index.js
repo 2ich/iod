@@ -15,7 +15,10 @@ app.get('/', (req, res) => {
 
 // 60 frames per second in ms ? : 1000 / 60 == 16.66..
 // 1000 / 100 == 10
-const updaterate = Math.round(1000 / 50)
+const updaterate = Math.round(1000 / 60)
+const cwidth = 1000
+const cheight = 500
+const bize = 24
 
 players = {}
 
@@ -35,7 +38,17 @@ function game() {
 }
 
 
+objs = {
+    'bushes' : []
+}
 
+for (let i = 0; i < 10; i++) {
+    objs['bushes'].push({
+        'x': rint(0, cwidth),
+        'y': rint(0, cheight),
+        'size': rint(bize + bize / 4, bize * 3)
+    })
+}
 
 
 
@@ -43,10 +56,19 @@ io.on('connection', (socket) => {
     console.log('Made socket connection with ID: ' + socket.id)
     socket.join('general')
     // players[[socket.id]] = { 'pos' : { 'x' : rint(0, 200), 'y' : rint(0, 200) }}
-    players[[socket.id]] = { 'poss' : [{ 'x' : rint(0, 200), 'y' : rint(0, 200) }] }
+    players[[socket.id]] = {
+        'poss' : [{
+            'x' : rint(0, 200),
+            'y' : rint(0, 200)
+        }],
+        'views' : [{
+            'x' : 0,
+            'y' : 0
+        }],
+    }
     //players[[socket.id]] = { 'lossposs' : players[[socket.id]]['poss'] }
     console.log(players)
-    socket.emit('con', players)
+    socket.emit('con', players, objs)
     // io.emit('game', 'hello')
     // io.to('general').emit('game', 'general emit')
 
@@ -60,7 +82,7 @@ io.on('connection', (socket) => {
         }
         
         else {
-            console.log('Posss else', positions)
+            //console.log('Posss else', positions)
         }
         
         

@@ -5,6 +5,7 @@
         body {
             margin: 0;
             margin: 10;
+            background-color: #ffffff;
         }
         #canvas {
             border: 0px solid black;
@@ -57,14 +58,12 @@ counter = 0
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d');
 
-canvas.height = 400
-canvas.width = 400
-
-ctx.fillStyle = 'black'
-ctx.fillRect(0, 0, canvas.width, canvas.height)
+canvas.width = 1000
+canvas.height = 500
 
 players = {}
-psize = 20 // 15
+psize = 24 // 15
+halfize = psize / 2
 // ~ framerate = 17, size = 20, vel =  8,9 > ? k
 // ~ framerate = 10, size = 20, vel = 6
 vel = 3
@@ -75,7 +74,7 @@ veldg = vel * (1 / Math.sqrt(2))
 //y = null
 x = 0
 y = 0
-framerate = Math.round(1000 / 250) // 16, 17
+framerate = Math.round(1000 / 333) // 16, 17
 
 keydow = []
 dir = '' // 
@@ -92,7 +91,64 @@ mdown = false
 positions = []
 
 crame = 0
-//codr = 
+
+obyecs = {}
+
+/*
+cl_bg = ''
+cl_self = ''
+cl_self_server = ''
+cl_enemy = ''
+cl_bush = ''
+*/
+/*
+// sample
+cl_bg = '#f1f1f1'
+cl_self = '#000000'
+cl_self_server = 'lightblue'
+cl_enemy = 'pink'
+cl_bush = 'lightgreen'
+*/
+/*
+// downgraded 32
+cl_bg = '#DCDAC9'
+cl_self = '#B8B4B2'
+cl_self_server = '#72B6CF'
+cl_enemy = '#C7424F'
+cl_bush = '#B1D480'
+*/
+/*
+// 48 elements
+cl_bg =          '#F5D9A6'
+cl_self =        '#0D171F'
+cl_self_server = '#E0AB72'
+cl_enemy =       '#EDAC4A'
+cl_bush =        '#CFDB72'
+/*
+cl_bg =          '#'
+cl_self =        '#'
+cl_self_server = '#'
+cl_enemy =       '#'
+cl_bush =        '#'
+*/
+/*
+// CC-29 lospec
+cl_bg =          '#f2f0e5'
+cl_self =        '#212123'
+cl_self_server = '#b8b5b9'
+cl_enemy =       '#b45252'
+cl_bush =        '#c2d368'
+*/
+
+cl_bg =          '#f4f4f4'
+cl_self =        '#212123'
+cl_self_server = '#b8b5b9'
+cl_enemy =       '#b45252'
+cl_bush =        '#c2d368'
+
+
+
+
 
 window.addEventListener('keydown', e => {
 
@@ -227,23 +283,33 @@ function draw() {
     //console.log(getMousePos()
 
 
-
-    ctx.fillStyle = '#f1f1f1'
+    // bg
+    ctx.fillStyle = cl_bg
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // char 
+    ctx.fillStyle = cl_self
+    ctx.fillRect(x - halfize, y - halfize, psize, psize)
+    // vw line
 
-    ctx.fillStyle = 'black'
-    ctx.fillRect(x, y, psize, psize)
+    ctx.lineWidth = 3
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+    ctx.lineTo(xmouse, ymouse)
+    ctx.strokeStyle = cl_self
+    ctx.stroke()
+
+
 
     positions.push( {'x': x, 'y': y} )
     //console.log(positions)
 
     for (const property in players) {
-        console.log('Players for loop iteration', players)
-        ctx.fillStyle = 'pink'
+        //console.log('Players for loop iteration', players)
+        ctx.fillStyle = cl_enemy
         //console.log("HELLO", socket.id, property)
         if (property == socket.id) {
             // server image
-            ctx.fillStyle = 'lightblue'
+            ctx.fillStyle = cl_self_server
         }
         //ctx.fillRect(Math.round(players[property]['pos']['x']), Math.round(players[property]['pos']['y']), psize, psize)
         //ctx.fillRect(players[property]['pos']['x'], players[property]['pos']['y'], psize, psize)
@@ -263,23 +329,29 @@ function draw() {
             //console.log("[CRAME] 2", players[property]['poss'][[crame]]['x'])
 
             if (crame < krames) {
-                ctx.fillRect(players[property]['poss'][crame]['x'], players[property]['poss'][crame]['y'], psize, psize)
+                ctx.fillRect(players[property]['poss'][crame]['x'] - halfize, players[property]['poss'][crame]['y'] - halfize, psize, psize)
                 crame += 1
             }
             else {
                 
-                console.log('krames', krames)
-                console.log('crame', crame)
-                console.log('whole poss', players[property]['poss'])
-                console.log('what', players[property]['poss'][krames - 1])
+                //console.log('krames', krames)
+                //console.log('crame', crame)
+                //console.log('whole poss', players[property]['poss'])
+                //console.log('what', players[property]['poss'][krames - 1])
                 
-                ctx.fillRect(players[property]['poss'][krames - 1]['x'], players[property]['poss'][krames - 1]['y'], psize, psize)
+                ctx.fillRect(players[property]['poss'][krames - 1]['x'] - halfize, players[property]['poss'][krames - 1]['y'] - halfize, psize, psize)
             }
         } catch (error) {
-            console.log("Probably out of range eeor")
+            //console.log("Probably out of range eeor")
             console.error(error)
         }
         //console.log(property)
+
+        ctx.fillStyle = cl_bush
+        for (let i = 0; i < obyecs['bushes'].length; i++) {
+            let s = obyecs['bushes'][i]['size']
+            ctx.fillRect(obyecs['bushes'][i]['x'], obyecs['bushes'][i]['y'], s, s)
+        }
         
     };
 }
@@ -292,7 +364,7 @@ setInterval(draw, framerate)
 
 const socket = io()
 
-socket.on('con', (playerdata) => {
+socket.on('con', (playerdata, objs) => {
     //console.log("Client socket.id ", socket.id)
     //console.log("Playerdata ", playerdata)
     //console.log("Pos ", playerdata[])
@@ -302,6 +374,8 @@ socket.on('con', (playerdata) => {
     */
     x = playerdata[[socket.id]]['poss'][0]['x']
     y = playerdata[[socket.id]]['poss'][0]['y']
+
+    obyecs = objs
 })
 
 socket.on('game', (svplayers) => {
@@ -310,7 +384,7 @@ socket.on('game', (svplayers) => {
     document.getElementById('hone').innerHTML = counter
     //
     socket.emit('gack', positions)
-    console.log('Emit gack positions', positions)
+    //console.log('Emit gack positions', positions)
 
     positions = []
 
