@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 
 // 60 frames per second in ms ? : 1000 / 60 == 16.66..
 // 1000 / 100 == 10
-const updaterate = Math.round(1000 / 60)
+const updaterate = Math.round(1000 / 10)
 const cwidth = 1000
 const cheight = 500
 const bize = 24
