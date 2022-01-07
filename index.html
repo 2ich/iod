@@ -58,15 +58,24 @@ counter = 0
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d');
 
-canvas.width = 1000
-canvas.height = 500
+cwidth = 1000
+cheight = 500
+canvas.width = cwidth
+canvas.height = cheight
 
 players = {}
-psize = 24 // 15
+psize = 16// 15 22 14
 halfize = psize / 2
+
+bullsize = 5
+hullsize = bullsize / 2
+
+bulvel = 24
 // ~ framerate = 17, size = 20, vel =  8,9 > ? k
 // ~ framerate = 10, size = 20, vel = 6
-vel = 3
+// ~ framerate = 4, size = 24, vel = 3, 2.5
+// 
+vel = 2.5
 //veldg = vel / 1.41421356237
 veldg = vel * (1 / Math.sqrt(2))
 //veldg += 0.000000000001
@@ -89,6 +98,8 @@ ymouse = 0
 mdown = false
 
 positions = []
+bullets = []
+buvels = []
 
 crame = 0
 
@@ -142,6 +153,7 @@ cl_bush =        '#c2d368'
 
 cl_bg =          '#f4f4f4'
 cl_self =        '#212123'
+cl_bult =        '#212123'
 cl_self_server = '#b8b5b9'
 cl_enemy =       '#b45252'
 cl_bush =        '#8ab060'
@@ -184,6 +196,21 @@ window.addEventListener('mousedown', e => {
     console.log("MOUSE DOWNED")
     mdown = true
     console.log(mdown)
+    console.log(xmouse, ymouse)
+
+    bullets.push({
+        'x': x,
+        'y': y,
+    })
+    vectx = xmouse - x
+    vecty = ymouse - y
+    
+    vectn = Math.sqrt(vectx * vectx + vecty * vecty)
+    buvels.push({
+        'velx': (vectx / vectn) * bulvel,
+        'vely': (vecty / vectn) * bulvel,
+    })
+    // bevel
 })
 
 window.addEventListener('mouseup', e => {
@@ -347,6 +374,27 @@ function draw() {
             console.error(error)
         }
         //console.log(property)
+
+        // bulst
+        ctx.fillStyle = cl_bult
+        iBlt = 0
+        kBlt = bullets.length
+        while (iBlt < kBlt) {
+            //console.log('Bullets', bullets)
+            //console.log('Bullet pos', bullets[iBlt])
+            if (bullets[iBlt]['x'] < 0 || bullets[iBlt]['y'] < 0 || bullets[iBlt]['x'] > cwidth || bullets[iBlt]['y'] > cheight) {
+                bullets.splice(iBlt, 1)
+                buvels.splice(iBlt, 1)
+                kBlt--
+            }
+            else {
+                ctx.fillRect(bullets[iBlt]['x'] - hullsize, bullets[iBlt]['y'] - hullsize, bullsize, bullsize)
+                bullets[iBlt]['x'] += buvels[iBlt]['velx']
+                bullets[iBlt]['y'] += buvels[iBlt]['vely']
+            }
+            iBlt++
+        }
+
 
         ctx.fillStyle = cl_bush
         for (let i = 0; i < obyecs['bushes'].length; i++) {
